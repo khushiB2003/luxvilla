@@ -235,7 +235,12 @@ villas.forEach(v=>{
     </div>
   </div>`;
 });
-function openModal(v){
+  // ========================================
+// VILLA MODAL FUNCTIONS
+// ========================================
+let currentVilla = null;
+function openModal(v,idx){
+  currentVilla = v;
   document.getElementById('modalTitle').innerText=v.title;
   document.getElementById('modalImage').style.backgroundImage=`url(${v.img})`;
   document.getElementById('modalLocation').innerText=v.loc;
@@ -245,7 +250,7 @@ function openModal(v){
   document.getElementById('modalArea').innerText=v.area;
   document.getElementById('modalPrice').innerText=v.price;
   document.getElementById('villaModal').style.display='flex';
-}
+
    pushToDataLayer({
     event: 'villaView',
     eventCategory: 'property',
@@ -263,8 +268,15 @@ function openModal(v){
       propertyStatus: 'available'
     }
   });
-function closeModal(){document.getElementById('villaModal').style.display='none'}
-window.onclick=function(e){const m=document.getElementById('villaModal');if(e.target===m)closeModal()}
+}
+function closeModal()
+{document.getElementById('villaModal').style.display='none';
+ currentVilla=null;
+}
+window.onclick=function(e)
+{const m=document.getElementById('villaModal');
+ if(e.target===m)closeModal()
+}
 
 function handleSchedule(){
   if(currentVilla) {
