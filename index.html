@@ -182,6 +182,34 @@ footer p{line-height:1.7}
 </div>
 
 <script>
+  // ========================================
+// ADOBE ANALYTICS DATA LAYER INITIALIZATION
+// ========================================
+window.adobeDataLayer = window.adobeDataLayer || [];
+
+// Initialize Page Load Event
+window.adobeDataLayer.push({
+  event: 'pageLoad',
+  timestamp: new Date().toISOString(),
+  page: {
+    pageName: 'LuxVilla:Home',
+    pageType: 'homepage',
+    siteSection: 'home',
+    language: 'en',
+    platform: 'web'
+  },
+  user: {
+    loginStatus: 'guest',
+    visitorType: 'new'
+  }
+});
+
+// Helper function to push events to data layer
+function pushToDataLayer(eventData) {
+  eventData.timestamp = new Date().toISOString();
+  window.adobeDataLayer.push(eventData);
+  console.log('📊 Adobe Analytics Event:', eventData);
+}
 const villas=[
 {title:"Ocean View Paradise",loc:"Goa, India",beds:5,baths:4,area:4500,price:"2,500,000",type:"Featured",img:"https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"},
 {title:"Mountain Retreat",loc:"Mumbai, India",beds:4,baths:3,area:3800,price:"1,800,000",type:"New",img:"https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80"},
@@ -218,13 +246,219 @@ function openModal(v){
   document.getElementById('modalPrice').innerText=v.price;
   document.getElementById('villaModal').style.display='flex';
 }
+   pushToDataLayer({
+    event: 'villaView',
+    eventCategory: 'property',
+    eventAction: 'view_details',
+    eventLabel: v.title,
+    property: {
+      propertyID: `VILLA_${idx + 1}`,
+      propertyName: v.title,
+      propertyLocation: v.loc,
+      propertyPrice: v.price,
+      propertyType: v.type,
+      propertyBedrooms: v.beds,
+      propertyBathrooms: v.baths,
+      propertyArea: v.area,
+      propertyStatus: 'available'
+    }
+  });
 function closeModal(){document.getElementById('villaModal').style.display='none'}
 window.onclick=function(e){const m=document.getElementById('villaModal');if(e.target===m)closeModal()}
 
 function handleSchedule(){
+  if(currentVilla) {
+    // Push schedule viewing event to data layer
+    pushToDataLayer({
+      event: 'scheduleViewing',
+      eventCategory: 'lead_generation',
+      eventAction: 'schedule_viewing_request',
+      eventLabel: currentVilla.title,
+      form: {
+        formName: 'schedule_viewing',
+        formType: 'lead_capture',
+        formLocation: 'villa_modal'
+      },
+      property: {
+        propertyID: currentVilla.title.replace(/\s+/g, '_').toUpperCase(),
+        propertyName: currentVilla.title,
+        propertyLocation: currentVilla.loc,
+        propertyPrice: currentVilla.price,
+        propertyType: currentVilla.type
+      },
+      conversion: {
+        conversionType: 'viewing_scheduled',
+        conversionValue: 'high_intent_lead'
+      }
+    });
+  }
+  
   alert('Thank you! Our team will contact you shortly to schedule a viewing.');
   closeModal();
 }
+
+// ========================================
+// SEARCH FUNCTIONALITY
+// ========================================
+function handleSearch() {
+  const location = document.getElementById('searchLocation').value;
+  const minPrice = document.getElementById('searchMinPrice').value;
+  const maxPrice = document.getElementById('searchMaxPrice').value;
+  const bedrooms = document.getElementById('searchBedrooms').value;
+  
+  // Push search event to data layer
+  pushToDataLayer({
+    event: 'villaSearch',
+    eventCategory: 'search',
+    eventAction: 'property_search',
+    eventLabel: location,
+    search: {
+      searchType: 'property_filter',
+      searchLocation: location,
+      searchMinPrice: minPrice || 'not_specified',
+      searchMaxPrice: maxPrice || 'not_specified',
+      searchBedrooms: bedrooms,
+      searchResultsCount: villas.length
+    },
+    filters: {
+      locationFilter: location,
+      priceRangeMin: minPrice,
+      priceRangeMax: maxPrice,
+      bedroomFilter: bedrooms
+    }
+  });
+  
+  alert(`Searching villas in ${location}...`);
+}
+
+// ========================================
+// CONTACT FORM SUBMISSION
+// ========================================
+function handleContactSubmit() {
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const phone = document.getElementById('contactPhone').value;
+  const message = document.getElementById('contactMessage').value;
+  
+  if(!name || !email || !phone || !message) {
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  // Push contact form submission to data layer
+  pushToDataLayer({
+    event: 'formSubmission',
+    eventCategory: 'lead_generation',
+    eventAction: 'contact_form_submit',
+    eventLabel: 'general_inquiry',
+    form: {
+      formName: 'contact_form',
+      formType: 'inquiry',
+      formLocation: 'contact_section',
+      formCompletionTime: 'not_tracked'
+    },
+    user: {
+      userName: name,
+      userEmail: email,
+      userPhone: phone,
+      userMessage: message.substring(0, 50) + '...'
+    },
+    conversion: {
+      conversionType: 'contact_submitted',
+      conversionValue: 'general_lead'
+    }
+  });
+  
+  alert('Thank you for contacting us! We will get back to you soon.');
+  
+  // Clear form
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactPhone').value = '';
+  document.getElementById('contactMessage').value = '';
+}
+
+// ========================================
+// NAVIGATION TRACKING
+// ========================================
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const section = this.getAttribute('href').replace('#', '');
+    
+    pushToDataLayer({
+      event: 'navigationClick',
+      eventCategory: 'navigation',
+      eventAction: 'menu_click',
+      eventLabel: section,
+      navigation: {
+        navType: 'main_menu',
+        navDestination: section,
+        navLabel: this.textContent
+      }
+    });
+    
+    // Smooth scroll to section
+    const targetSection = document.getElementById(section);
+    if(targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ========================================
+// CTA BUTTON TRACKING
+// ========================================
+document.querySelector('.hero button').addEventListener('click', function() {
+  pushToDataLayer({
+    event: 'ctaClick',
+    eventCategory: 'engagement',
+    eventAction: 'cta_click',
+    eventLabel: 'explore_villas_hero',
+    cta: {
+      ctaLocation: 'hero_section',
+      ctaText: 'Explore Villas',
+      ctaType: 'primary'
+    }
+  });
+});
+
+// ========================================
+// SCROLL DEPTH TRACKING
+// ========================================
+let scrollThresholds = [25, 50, 75, 100];
+let trackedScrolls = new Set();
+
+window.addEventListener('scroll', function() {
+  const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  
+  scrollThresholds.forEach(threshold => {
+    if(scrollPercent >= threshold && !trackedScrolls.has(threshold)) {
+      trackedScrolls.add(threshold);
+      
+      pushToDataLayer({
+        event: 'scrollDepth',
+        eventCategory: 'engagement',
+        eventAction: 'scroll_depth',
+        eventLabel: `${threshold}%`,
+        scroll: {
+          scrollDepth: threshold,
+          scrollPosition: Math.round(scrollPercent)
+        }
+      });
+    }
+  });
+});
+
+// ========================================
+// DEBUGGING CONSOLE
+// ========================================
+console.log('%c🏠 LuxVilla Adobe Analytics Data Layer', 'color: #1e3c72; font-size: 18px; font-weight: bold;');
+console.log('%cData Layer is ready. Access it via: window.adobeDataLayer', 'color: #2a5298; font-size: 14px;');
+console.log('%cAll events are being tracked and pushed to the data layer.', 'color: #666; font-size: 12px;');
+console.log('%c', 'font-size: 2px;');
+console.log('To view all tracked events, type: window.adobeDataLayer');
+
 </script>
 </body>
 </html>
