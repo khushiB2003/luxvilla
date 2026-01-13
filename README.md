@@ -1,1 +1,464 @@
-# luxvilla
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxVilla – Premium Villa Agency</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#333;background:#f5f7fa}
+
+/* HEADER */
+header{position:fixed;top:0;width:100%;z-index:1000;background:linear-gradient(135deg,#1e3c72,#2a5298)}
+nav{max-width:1400px;margin:auto;padding:15px 5%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.8rem;font-weight:bold;color:#fff}
+.nav-links{list-style:none;display:flex;gap:30px}
+.nav-links a{color:white;text-decoration:none;font-weight:500;cursor:pointer}
+.nav-links a:hover{color:#ffd700}
+
+/* HERO */
+.hero{height:100vh;margin-top:70px;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80');background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff}
+.hero h1{font-size:3.2rem;margin-bottom:15px}
+.hero p{font-size:1.3rem;margin-bottom:30px}
+.hero button{padding:14px 45px;border:none;border-radius:30px;background:#ffd700;color:#1e3c72;font-size:1.1rem;font-weight:bold;cursor:pointer}
+
+/* SEARCH */
+.search-section{padding:60px 5%}
+.search-box{max-width:1200px;margin:auto;background:#fff;padding:40px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.1)}
+.search-box h2{text-align:center;color:#1e3c72;margin-bottom:30px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.filters label{font-weight:600;color:#1e3c72}
+.filters input,.filters select{padding:12px;border-radius:10px;border:1px solid #ccc;width:100%}
+.search-btn{margin-top:25px;width:100%;padding:15px;background:#1e3c72;color:white;border:none;border-radius:10px;font-size:1.1rem;font-weight:bold;cursor:pointer}
+
+/* VILLAS */
+.villas-section{padding:80px 5%;max-width:1400px;margin:auto}
+.section-title{text-align:center;font-size:2.6rem;color:#1e3c72;margin-bottom:60px}
+.villa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:35px}
+.villa-card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.15);transition:.3s}
+.villa-card:hover{transform:translateY(-10px)}
+.villa-image{height:240px;background-size:cover;background-position:center;position:relative}
+.villa-badge{position:absolute;top:15px;right:15px;background:#ffd700;padding:6px 18px;border-radius:20px;font-weight:bold}
+.villa-details{padding:22px}
+.villa-details h3{color:#1e3c72;margin-bottom:8px}
+.location{color:#666;margin-bottom:12px}
+.features{display:flex;gap:15px;font-size:.9rem;margin-bottom:15px;flex-wrap:wrap}
+.price{font-size:1.6rem;font-weight:bold;color:#1e3c72;margin-bottom:15px}
+.view-btn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;font-weight:bold;cursor:pointer}
+
+/* SERVICES */
+.services{padding:80px 5%;background:linear-gradient(135deg,#eef2f7,#dbe3ee)}
+.services-grid{max-width:1400px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px}
+.service-card{background:white;border-radius:20px;padding:40px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.service-card h3{color:#1e3c72;margin:15px 0}
+.service-icon{font-size:3rem}
+
+/* CONTACT */
+.contact{padding:80px 5%}
+.contact-box{max-width:800px;margin:auto;background:white;padding:50px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+.contact-box label{font-weight:600;color:#1e3c72}
+.contact-box input,.contact-box textarea{width:100%;padding:14px;margin:10px 0 25px;border-radius:10px;border:1px solid #ccc}
+.contact-box button{width:100%;padding:15px;background:#1e3c72;color:white;border:none;border-radius:12px;font-size:1.1rem;font-weight:bold;cursor:pointer}
+
+/* FOOTER */
+footer{background:#1e3c72;color:white;padding:50px 5%}
+.footer-grid{max-width:1400px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px}
+footer h3{color:#ffd700;margin-bottom:15px}
+footer p{line-height:1.7}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{flex-direction:column;align-items:flex-start}
+  .nav-links{flex-direction:column;gap:15px;width:100%;margin-top:10px}
+  .hero h1{font-size:2.2rem}
+  .filters{grid-template-columns:1fr}
+  .villa-grid{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+}
+/* MODAL */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);z-index:2000;justify-content:center;align-items:center;padding:20px}
+.modal-content{background:#fff;border-radius:18px;max-width:650px;width:100%;max-height:90vh;overflow-y:auto;position:relative;padding:30px}
+.close-modal{position:absolute;top:15px;right:20px;font-size:28px;cursor:pointer;color:#333}
+.modal-image{height:250px;border-radius:14px;margin:20px 0;background-size:cover;background-position:center}
+.modal-features li{margin:6px 0}
+.schedule-btn{margin-top:20px;width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#1e3c72,#2a5298);color:white;font-size:1.1rem;font-weight:bold;cursor:pointer}
+
+</style>
+</head>
+<body>
+<header>
+<nav>
+<div class="logo">LuxVilla</div>
+<ul class="nav-links">
+<li><a href="#home">Home</a></li>
+<li><a href="#villas">Villas</a></li>
+<li><a href="#services">Services</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<div>
+<h1>Find Your Dream Villa</h1>
+<p>Discover luxury villas in prime locations worldwide</p>
+<a href="#villas"><button>Explore Villas</button></a>
+</div>
+</section>
+
+<section class="search-section">
+<div class="search-box">
+<h2>Search Your Perfect Villa</h2>
+<div class="filters">
+<div><label>Location</label><select><option>All Locations</option></select></div>
+<div><label>Min Price ($)</label><input placeholder="Min Price"></div>
+<div><label>Max Price ($)</label><input placeholder="Max Price"></div>
+<div><label>Bedrooms</label><select><option>Any</option></select></div>
+</div>
+<button class="search-btn">Search Villas</button>
+</div>
+</section>
+
+<section class="villas-section" id="villas">
+<h2 class="section-title">Featured Luxury Villas</h2>
+<div class="villa-grid" id="villaGrid"></div>
+</section>
+
+<section class="services" id="services">
+<h2 class="section-title">Our Services</h2>
+<div class="services-grid">
+<div class="service-card"><div class="service-icon">🏠</div><h3>Property Management</h3><p>Complete property management services</p></div>
+<div class="service-card"><div class="service-icon">💼</div><h3>Buying & Selling</h3><p>Expert buying & selling guidance</p></div>
+<div class="service-card"><div class="service-icon">🔑</div><h3>Rental Services</h3><p>Short & long term rentals</p></div>
+<div class="service-card"><div class="service-icon">⭐</div><h3>VIP Concierge</h3><p>24/7 luxury concierge support</p></div>
+</div>
+</section>
+
+<section class="contact" id="contact">
+<h2 class="section-title">Get In Touch</h2>
+<div class="contact-box">
+<label>Full Name</label><input placeholder="Enter your name">
+<label>Email</label><input placeholder="Enter your email">
+<label>Phone</label><input placeholder="Enter your phone number">
+<label>Message</label><textarea placeholder="Tell us about your requirements"></textarea>
+<button>Send Message</button>
+</div>
+</section>
+
+<footer>
+<div class="footer-grid">
+<div><h3>About LuxVilla</h3><p>Your trusted partner in luxury villa management and sales.</p></div>
+<div><h3>Quick Links</h3><p>Home<br>Villas<br>Services<br>Contact</p></div>
+<div><h3>Contact Info</h3><p>📧 info@luxvilla.com<br>📞 +91 98765 43210<br>📍 Mumbai, India</p></div>
+</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal" id="villaModal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle"></h2>
+    <div class="modal-image" id="modalImage"></div>
+    <p><strong>📍 Location:</strong> <span id="modalLocation"></span></p>
+    <p id="modalDesc"></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0">
+      <div>🛏 <strong>Bedrooms:</strong> <span id="modalBeds"></span></div>
+      <div>🚿 <strong>Bathrooms:</strong> <span id="modalBaths"></span></div>
+      <div>📐 <strong>Area:</strong> <span id="modalArea"></span> sqft</div>
+      <div>💰 <strong>Price:</strong> $<span id="modalPrice"></span></div>
+    </div>
+    <h3>Features:</h3>
+    <ul class="modal-features">
+      <li>Private Swimming Pool</li>
+      <li>Modern Kitchen</li>
+      <li>Garden & Landscaping</li>
+      <li>Smart Home System</li>
+      <li>Security System</li>
+      <li>Parking Space</li>
+    </ul>
+    <button class="schedule-btn" onclick="handleSchedule()">Schedule Viewing</button>
+  </div>
+</div>
+
+<script>
+  // ========================================
+// ADOBE ANALYTICS DATA LAYER INITIALIZATION
+// ========================================
+window.adobeDataLayer = window.adobeDataLayer || [];
+
+// Initialize Page Load Event
+window.adobeDataLayer.push({
+  event: 'pageLoad',
+  timestamp: new Date().toISOString(),
+  page: {
+    pageName: 'LuxVilla:Home',
+    pageType: 'homepage',
+    siteSection: 'home',
+    language: 'en',
+    platform: 'web'
+  },
+  user: {
+    loginStatus: 'guest',
+    visitorType: 'new'
+  }
+});
+
+// Helper function to push events to data layer
+function pushToDataLayer(eventData) {
+  eventData.timestamp = new Date().toISOString();
+  window.adobeDataLayer.push(eventData);
+  console.log('📊 Adobe Analytics Event:', eventData);
+}
+const villas=[
+{title:"Ocean View Paradise",loc:"Goa, India",beds:5,baths:4,area:4500,price:"2,500,000",type:"Featured",img:"https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"},
+{title:"Mountain Retreat",loc:"Mumbai, India",beds:4,baths:3,area:3800,price:"1,800,000",type:"New",img:"https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80"},
+{title:"Desert Oasis",loc:"Dubai, UAE",beds:6,baths:5,area:6000,price:"4,500,000",type:"Featured",img:"https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=800&q=80"},
+{title:"Tropical Haven",loc:"Bali, Indonesia",beds:4,baths:4,area:3500,price:"1,200,000",type:"Hot Deal",img:"https://images.unsplash.com/photo-1599423300746-b62533397364?auto=format&fit=crop&w=800&q=80"},
+{title:"Coastal Elegance",loc:"Goa, India",beds:5,baths:4,area:4200,price:"2,200,000",type:"Featured",img:"https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"},
+{title:"Urban Luxury",loc:"Mumbai, India",beds:3,baths:3,area:3000,price:"1,500,000",type:"New",img:"https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=800&q=80"}
+];
+
+const grid=document.getElementById('villaGrid');
+villas.forEach(v=>{
+  grid.innerHTML+=`
+  <div class="villa-card">
+    <div class="villa-image" style="background-image:url('${v.img}')">
+      <div class="villa-badge">${v.type}</div>
+    </div>
+    <div class="villa-details">
+      <h3>${v.title}</h3>
+      <div class="location">📍 ${v.loc}</div>
+      <div class="features">🛏 ${v.beds} Beds | 🚿 ${v.baths} Baths | 📐 ${v.area} sqft</div>
+      <div class="price">${v.price}</div>
+      <button class="view-btn" onclick='openModal(${JSON.stringify(v)})'>View Details</button>
+    </div>
+  </div>`;
+});
+function openModal(v){
+  document.getElementById('modalTitle').innerText=v.title;
+  document.getElementById('modalImage').style.backgroundImage=`url(${v.img})`;
+  document.getElementById('modalLocation').innerText=v.loc;
+  document.getElementById('modalDesc').innerText='Stunning beachfront villa with panoramic ocean views';
+  document.getElementById('modalBeds').innerText=v.beds;
+  document.getElementById('modalBaths').innerText=v.baths;
+  document.getElementById('modalArea').innerText=v.area;
+  document.getElementById('modalPrice').innerText=v.price;
+  document.getElementById('villaModal').style.display='flex';
+}
+   pushToDataLayer({
+    event: 'villaView',
+    eventCategory: 'property',
+    eventAction: 'view_details',
+    eventLabel: v.title,
+    property: {
+      propertyID: `VILLA_${idx + 1}`,
+      propertyName: v.title,
+      propertyLocation: v.loc,
+      propertyPrice: v.price,
+      propertyType: v.type,
+      propertyBedrooms: v.beds,
+      propertyBathrooms: v.baths,
+      propertyArea: v.area,
+      propertyStatus: 'available'
+    }
+  });
+function closeModal(){document.getElementById('villaModal').style.display='none'}
+window.onclick=function(e){const m=document.getElementById('villaModal');if(e.target===m)closeModal()}
+
+function handleSchedule(){
+  if(currentVilla) {
+    // Push schedule viewing event to data layer
+    pushToDataLayer({
+      event: 'scheduleViewing',
+      eventCategory: 'lead_generation',
+      eventAction: 'schedule_viewing_request',
+      eventLabel: currentVilla.title,
+      form: {
+        formName: 'schedule_viewing',
+        formType: 'lead_capture',
+        formLocation: 'villa_modal'
+      },
+      property: {
+        propertyID: currentVilla.title.replace(/\s+/g, '_').toUpperCase(),
+        propertyName: currentVilla.title,
+        propertyLocation: currentVilla.loc,
+        propertyPrice: currentVilla.price,
+        propertyType: currentVilla.type
+      },
+      conversion: {
+        conversionType: 'viewing_scheduled',
+        conversionValue: 'high_intent_lead'
+      }
+    });
+  }
+  
+  alert('Thank you! Our team will contact you shortly to schedule a viewing.');
+  closeModal();
+}
+
+// ========================================
+// SEARCH FUNCTIONALITY
+// ========================================
+function handleSearch() {
+  const location = document.getElementById('searchLocation').value;
+  const minPrice = document.getElementById('searchMinPrice').value;
+  const maxPrice = document.getElementById('searchMaxPrice').value;
+  const bedrooms = document.getElementById('searchBedrooms').value;
+  
+  // Push search event to data layer
+  pushToDataLayer({
+    event: 'villaSearch',
+    eventCategory: 'search',
+    eventAction: 'property_search',
+    eventLabel: location,
+    search: {
+      searchType: 'property_filter',
+      searchLocation: location,
+      searchMinPrice: minPrice || 'not_specified',
+      searchMaxPrice: maxPrice || 'not_specified',
+      searchBedrooms: bedrooms,
+      searchResultsCount: villas.length
+    },
+    filters: {
+      locationFilter: location,
+      priceRangeMin: minPrice,
+      priceRangeMax: maxPrice,
+      bedroomFilter: bedrooms
+    }
+  });
+  
+  alert(`Searching villas in ${location}...`);
+}
+
+// ========================================
+// CONTACT FORM SUBMISSION
+// ========================================
+function handleContactSubmit() {
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const phone = document.getElementById('contactPhone').value;
+  const message = document.getElementById('contactMessage').value;
+  
+  if(!name || !email || !phone || !message) {
+    alert('Please fill in all fields');
+    return;
+  }
+  
+  // Push contact form submission to data layer
+  pushToDataLayer({
+    event: 'formSubmission',
+    eventCategory: 'lead_generation',
+    eventAction: 'contact_form_submit',
+    eventLabel: 'general_inquiry',
+    form: {
+      formName: 'contact_form',
+      formType: 'inquiry',
+      formLocation: 'contact_section',
+      formCompletionTime: 'not_tracked'
+    },
+    user: {
+      userName: name,
+      userEmail: email,
+      userPhone: phone,
+      userMessage: message.substring(0, 50) + '...'
+    },
+    conversion: {
+      conversionType: 'contact_submitted',
+      conversionValue: 'general_lead'
+    }
+  });
+  
+  alert('Thank you for contacting us! We will get back to you soon.');
+  
+  // Clear form
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactPhone').value = '';
+  document.getElementById('contactMessage').value = '';
+}
+
+// ========================================
+// NAVIGATION TRACKING
+// ========================================
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const section = this.getAttribute('href').replace('#', '');
+    
+    pushToDataLayer({
+      event: 'navigationClick',
+      eventCategory: 'navigation',
+      eventAction: 'menu_click',
+      eventLabel: section,
+      navigation: {
+        navType: 'main_menu',
+        navDestination: section,
+        navLabel: this.textContent
+      }
+    });
+    
+    // Smooth scroll to section
+    const targetSection = document.getElementById(section);
+    if(targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// ========================================
+// CTA BUTTON TRACKING
+// ========================================
+document.querySelector('.hero button').addEventListener('click', function() {
+  pushToDataLayer({
+    event: 'ctaClick',
+    eventCategory: 'engagement',
+    eventAction: 'cta_click',
+    eventLabel: 'explore_villas_hero',
+    cta: {
+      ctaLocation: 'hero_section',
+      ctaText: 'Explore Villas',
+      ctaType: 'primary'
+    }
+  });
+});
+
+// ========================================
+// SCROLL DEPTH TRACKING
+// ========================================
+let scrollThresholds = [25, 50, 75, 100];
+let trackedScrolls = new Set();
+
+window.addEventListener('scroll', function() {
+  const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  
+  scrollThresholds.forEach(threshold => {
+    if(scrollPercent >= threshold && !trackedScrolls.has(threshold)) {
+      trackedScrolls.add(threshold);
+      
+      pushToDataLayer({
+        event: 'scrollDepth',
+        eventCategory: 'engagement',
+        eventAction: 'scroll_depth',
+        eventLabel: `${threshold}%`,
+        scroll: {
+          scrollDepth: threshold,
+          scrollPosition: Math.round(scrollPercent)
+        }
+      });
+    }
+  });
+});
+
+// ========================================
+// DEBUGGING CONSOLE
+// ========================================
+console.log('%c🏠 LuxVilla Adobe Analytics Data Layer', 'color: #1e3c72; font-size: 18px; font-weight: bold;');
+console.log('%cData Layer is ready. Access it via: window.adobeDataLayer', 'color: #2a5298; font-size: 14px;');
+console.log('%cAll events are being tracked and pushed to the data layer.', 'color: #666; font-size: 12px;');
+console.log('%c', 'font-size: 2px;');
+console.log('To view all tracked events, type: window.adobeDataLayer');
+
+</script>
+</body>
+</html>
